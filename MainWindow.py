@@ -2,8 +2,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 import os
 from task1 import create_csv_annotation
+from task5 import IteratorTask1
 
 
+# C:\Users\Leon\OneDrive\Рабочий стол\pythonlab3\dataset
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -27,6 +29,12 @@ class Ui_MainWindow(object):
         self.label.setFont(font)
         self.label.setStyleSheet("color: white;")
         self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(self.frame)
+        self.label_2.setGeometry(QtCore.QRect(110, 60, 251, 151))
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap(r"C:\Users\Leon\OneDrive\Рабочий стол\img\cat.jpg"))
+        self.label_2.setScaledContents(True)
+        self.label_2.setObjectName("label_2")
         self.PathToDataset = QtWidgets.QLineEdit(self.centralwidget)
         self.PathToDataset.setGeometry(QtCore.QRect(60, 280, 380, 60))
         font = QtGui.QFont()
@@ -161,7 +169,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        self.__iterator = IteratorTask1()
         self.add_functions()
 
     def retranslateUi(self, MainWindow):
@@ -183,25 +191,49 @@ class Ui_MainWindow(object):
     def add_functions(self):
         # self.CreateAnnotation.clicked.connect(lambda: self.create_annotation(self.PathToDataset.text()))
         self.CreateAnnotation.clicked.connect(self.create_annotation)
+        self.NextRose.clicked.connect(self.next_rose)
 
+    def next_rose(self):
+        if self.__iterator.path == "":
+            path = self.PathToDataset.text()
+            if os.path.isdir(path):
+                self.__iterator.path_init(path+"\\rose")
+                self.__iterator.file_names_init()
+                self.__iterator.limit_init()
+                self.label_2.setPixmap(QtGui.QPixmap(self.__iterator.__next__()))
+            else:
+                self.ErrorMessage()
+        else:
+            try:
+                self.label_2.setPixmap(QtGui.QPixmap(self.__iterator.__next__()))
+            except:
+                error = QMessageBox()
+                error.setWindowTitle("Error")
+                error.setText("Pictures are over.\nThey will start anew.")
+                error.setIcon(QMessageBox.Warning)
+                error.setStandardButtons(QMessageBox.Ok)
+                error.exec_()
+                self.__iterator.clear()
 
     def create_annotation(self):
         path_to_dataset = self.PathToDataset.text()
         if os.path.isdir(path_to_dataset):
-            create_csv_annotation(path_to_dataset.split("\\")[-1], "annotation.csv")
+            create_csv_annotation(
+                path_to_dataset.split("\\")[-1], "annotation.csv")
         else:
-             error = QMessageBox()
-             error.setWindowTitle("Error")
-             error.setText("Dir with that path is not exists.\nChange it and try again.")
-             error.setIcon(QMessageBox.Warning)
-             error.setStandardButtons(QMessageBox.Ok)
-             error.exec_()
+            self.ErrorMessage()
 
-        
+    def ErrorMessage(self):
+        error = QMessageBox()
+        error.setWindowTitle("Error")
+        error.setText(
+            "Dir with that path is not exists.\nChange it and try again.")
+        error.setIcon(QMessageBox.Warning)
+        error.setStandardButtons(QMessageBox.Ok)
+        error.exec_()
 
-    def write_text(self, text1, text2):
-        print(text1)
-        print(text2)
+    def show_image(self):
+        pass
 
 
 if __name__ == "__main__":
