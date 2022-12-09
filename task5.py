@@ -30,7 +30,7 @@ class IteratorTask1:
         self.__limit=len(self.__file_names)
 
     @property
-    def path(self):
+    def path(self)->Optional[str]:
         return self.__path
 
 class IteratorTask2:

@@ -2,12 +2,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 import os
 from task1 import create_csv_annotation
+from task2 import create_copy_dataset
+from task3 import create_randomname_file
 from task5 import IteratorTask1
 
 
 # C:\Users\Leon\OneDrive\Рабочий стол\pythonlab3\dataset
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow) -> None:
+        '''This function was created automatically by qtdesigner.add
+        Fields are being initialized here'''
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(480, 640)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -32,7 +36,8 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.frame)
         self.label_2.setGeometry(QtCore.QRect(110, 60, 251, 151))
         self.label_2.setText("")
-        self.label_2.setPixmap(QtGui.QPixmap(r"C:\Users\Leon\OneDrive\Рабочий стол\img\cat.jpg"))
+        self.label_2.setPixmap(QtGui.QPixmap(
+            r"C:\Users\Leon\OneDrive\Рабочий стол\img\cat.jpg"))
         self.label_2.setScaledContents(True)
         self.label_2.setObjectName("label_2")
         self.PathToDataset = QtWidgets.QLineEdit(self.centralwidget)
@@ -169,10 +174,13 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        self.__iterator = IteratorTask1()
+        self.__iterator_rose = IteratorTask1()
+        self.__iterator_tulip = IteratorTask1()
         self.add_functions()
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, MainWindow) -> None:
+        '''This function gives names to elements of buttons, labels etc,
+        which was created in setupUI function'''
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "DATASET Creator"))
@@ -188,52 +196,137 @@ class Ui_MainWindow(object):
         self.Task2.setText(_translate("MainWindow", "Task2"))
         self.Task3.setText(_translate("MainWindow", "Task3"))
 
-    def add_functions(self):
+    def add_functions(self) -> None:
+        '''This function adds an event handler.'''
         # self.CreateAnnotation.clicked.connect(lambda: self.create_annotation(self.PathToDataset.text()))
         self.CreateAnnotation.clicked.connect(self.create_annotation)
         self.NextRose.clicked.connect(self.next_rose)
+        self.NextTulip.clicked.connect(self.next_tulip)
+        self.Task1.clicked.connect(self.task1_exec)
+        self.Task2.clicked.connect(self.task2_exec)
+        self.Task3.clicked.connect(self.task3_exec)
 
-    def next_rose(self):
-        if self.__iterator.path == "":
+    def next_rose(self) -> None:
+        '''This function is Iterator.
+        It displays the next image of rose on the screen untill the end.
+        After that it begins with start.'''
+        if self.__iterator_rose.path == "":
             path = self.PathToDataset.text()
             if os.path.isdir(path):
-                self.__iterator.path_init(path+"\\rose")
-                self.__iterator.file_names_init()
-                self.__iterator.limit_init()
-                self.label_2.setPixmap(QtGui.QPixmap(self.__iterator.__next__()))
+                self.__iterator_rose.path_init(path+"\\rose")
+                self.__iterator_rose.file_names_init()
+                self.__iterator_rose.limit_init()
+                self.label_2.setPixmap(QtGui.QPixmap(
+                    self.__iterator_rose.__next__()))
             else:
                 self.ErrorMessage()
         else:
             try:
-                self.label_2.setPixmap(QtGui.QPixmap(self.__iterator.__next__()))
+                self.label_2.setPixmap(QtGui.QPixmap(
+                    self.__iterator_rose.__next__()))
             except:
-                error = QMessageBox()
-                error.setWindowTitle("Error")
-                error.setText("Pictures are over.\nThey will start anew.")
-                error.setIcon(QMessageBox.Warning)
-                error.setStandardButtons(QMessageBox.Ok)
-                error.exec_()
-                self.__iterator.clear()
+                self.ErrorMessage3()
+                self.__iterator_rose.clear()
 
-    def create_annotation(self):
+    def next_tulip(self) -> None:
+        '''This function is Iterator.
+        It displays the next image of tulip on the screen untill the end.
+        After that it begins with start.'''
+        if self.__iterator_tulip.path == "":
+            path = self.PathToDataset.text()
+            if os.path.isdir(path):
+                self.__iterator_tulip.path_init(path+"\\tulip")
+                self.__iterator_tulip.file_names_init()
+                self.__iterator_tulip.limit_init()
+                self.label_2.setPixmap(QtGui.QPixmap(
+                    self.__iterator_tulip.__next__()))
+            else:
+                self.ErrorMessage()
+        else:
+            try:
+                self.label_2.setPixmap(QtGui.QPixmap(
+                    self.__iterator_tulip.__next__()))
+            except:
+                self.ErrorMessage3()
+                self.__iterator_tulip.clear()
+
+    def create_annotation(self) -> None:
+        '''This function creates csv file with abs path of class of dataset.'''
         path_to_dataset = self.PathToDataset.text()
         if os.path.isdir(path_to_dataset):
-            create_csv_annotation(
-                path_to_dataset.split("\\")[-1], "annotation.csv")
+            try:
+                create_csv_annotation(
+                    path_to_dataset.split("\\")[-1], "annotation.csv")
+            except:
+                self.ErrorMessage2()
+
         else:
             self.ErrorMessage()
 
-    def ErrorMessage(self):
+    def ErrorMessage(self) -> None:
+        '''This function displays error message that dir does not exist.'''
         error = QMessageBox()
         error.setWindowTitle("Error")
         error.setText(
-            "Dir with that path is not exists.\nChange it and try again.")
+            "Dir with that path does not exist.\nChange it and try again.")
         error.setIcon(QMessageBox.Warning)
         error.setStandardButtons(QMessageBox.Ok)
         error.exec_()
 
-    def show_image(self):
-        pass
+    def ErrorMessage2(self) -> None:
+        '''This function displays error message that dir does not contain.'''
+        error = QMessageBox()
+        error.setWindowTitle("Error")
+        error.setText(
+            "This dir doesn't contain dataset's objects.\nChange it and try again.")
+        error.setIcon(QMessageBox.Warning)
+        error.setStandardButtons(QMessageBox.Ok)
+        error.exec_()
+
+    def ErrorMessage3(self)->None:
+        '''This function displays error message that pictures are over.'''
+        error = QMessageBox()
+        error.setWindowTitle("Error")
+        error.setText("Pictures are over.\nThey will start anew.")
+        error.setIcon(QMessageBox.Warning)
+        error.setStandardButtons(QMessageBox.Ok)
+        error.exec_()
+
+    def task1_exec(self)->None:
+        '''This function execute task 1 form second lab.'''
+        path = self.PathToDirOfDataset.text()
+        if os.path.isdir(path):
+            try:
+                create_csv_annotation(path.split(
+                    "\\")[-1], "annotation_task1.csv")
+            except:
+                self.ErrorMessage2()
+        else:
+            self.ErrorMessage()
+
+    def task2_exec(self)->None:
+        '''This function execute task 2 form second lab.'''
+        path = self.PathToDirOfDataset.text()
+        if os.path.isdir(path):
+            try:
+                create_copy_dataset(path.split(
+                    "\\")[-1], "dataset_task2", "annotation_task2.csv")
+            except:
+                self.ErrorMessage2()
+        else:
+            self.ErrorMessage()
+
+    def task3_exec(self)->None:
+        '''This function execute task 3 form second lab.'''
+        path = self.PathToDirOfDataset.text()
+        if os.path.isdir(path):
+            try:
+                create_randomname_file(
+                    "annotation_task3.csv", "dataset_task3", path.split("\\")[-1])
+            except:
+                self.ErrorMessage2()
+        else:
+            self.ErrorMessage()
 
 
 if __name__ == "__main__":
