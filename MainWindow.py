@@ -1,6 +1,8 @@
+import os
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
-import os
+
 from task1 import create_csv_annotation
 from task2 import create_copy_dataset
 from task3 import create_randomname_file
@@ -10,7 +12,7 @@ from task5 import IteratorTask1
 # C:\Users\Leon\OneDrive\Рабочий стол\pythonlab3\dataset
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow) -> None:
-        '''This function was created automatically by qtdesigner.add
+        '''This function was created automatically by qtdesigner.
         Fields are being initialized here'''
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(480, 640)
@@ -213,7 +215,7 @@ class Ui_MainWindow(object):
         if self.__iterator_rose.path == "":
             path = self.PathToDataset.text()
             if os.path.isdir(path):
-                self.__iterator_rose.path_init(path+"\\rose")
+                self.__iterator_rose.path_init(os.path.join(path, "rose"))
                 self.__iterator_rose.file_names_init()
                 self.__iterator_rose.limit_init()
                 self.label_2.setPixmap(QtGui.QPixmap(
@@ -235,7 +237,7 @@ class Ui_MainWindow(object):
         if self.__iterator_tulip.path == "":
             path = self.PathToDataset.text()
             if os.path.isdir(path):
-                self.__iterator_tulip.path_init(path+"\\tulip")
+                self.__iterator_tulip.path_init(os.path.join(path, "rose"))
                 self.__iterator_tulip.file_names_init()
                 self.__iterator_tulip.limit_init()
                 self.label_2.setPixmap(QtGui.QPixmap(
@@ -283,7 +285,7 @@ class Ui_MainWindow(object):
         error.setStandardButtons(QMessageBox.Ok)
         error.exec_()
 
-    def ErrorMessage3(self)->None:
+    def ErrorMessage3(self) -> None:
         '''This function displays error message that pictures are over.'''
         error = QMessageBox()
         error.setWindowTitle("Error")
@@ -292,7 +294,7 @@ class Ui_MainWindow(object):
         error.setStandardButtons(QMessageBox.Ok)
         error.exec_()
 
-    def task1_exec(self)->None:
+    def task1_exec(self) -> None:
         '''This function execute task 1 form second lab.'''
         path = self.PathToDirOfDataset.text()
         if os.path.isdir(path):
@@ -304,7 +306,7 @@ class Ui_MainWindow(object):
         else:
             self.ErrorMessage()
 
-    def task2_exec(self)->None:
+    def task2_exec(self) -> None:
         '''This function execute task 2 form second lab.'''
         path = self.PathToDirOfDataset.text()
         if os.path.isdir(path):
@@ -316,7 +318,7 @@ class Ui_MainWindow(object):
         else:
             self.ErrorMessage()
 
-    def task3_exec(self)->None:
+    def task3_exec(self) -> None:
         '''This function execute task 3 form second lab.'''
         path = self.PathToDirOfDataset.text()
         if os.path.isdir(path):
@@ -330,6 +332,7 @@ class Ui_MainWindow(object):
 
 
 if __name__ == "__main__":
+    print('start')
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
