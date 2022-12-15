@@ -11,7 +11,7 @@ from task5 import IteratorTask1
 
 # C:\Users\Leon\OneDrive\Рабочий стол\pythonlab3\dataset
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow) -> None:
+    def setupUi(self, MainWindow: QtWidgets.QMainWindow) -> None:
         '''This function was created automatically by qtdesigner.
         Fields are being initialized here'''
         MainWindow.setObjectName("MainWindow")
@@ -180,7 +180,7 @@ class Ui_MainWindow(object):
         self.__iterator_tulip = IteratorTask1()
         self.add_functions()
 
-    def retranslateUi(self, MainWindow) -> None:
+    def retranslateUi(self, MainWindow: QtWidgets.QMainWindow) -> None:
         '''This function gives names to elements of buttons, labels etc,
         which was created in setupUI function'''
         _translate = QtCore.QCoreApplication.translate
